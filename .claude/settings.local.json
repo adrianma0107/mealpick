@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc --noEmit)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npx supabase --version)",
+      "Bash(npx supabase projects list)",
+      "Bash(grep -r \"service_role\\\\|SERVICE_ROLE\\\\|SUPABASE_DB\" /Users/majun/Desktop/mealpick/.env*)",
+      "Bash(gh auth status)",
+      "Bash(git --version)",
+      "Bash(brew --version)",
+      "Bash(brew install gh)",
+      "Bash(gh auth login --web --hostname github.com --git-protocol https)",
+      "Bash(git init)",
+      "Bash(git checkout -b main)",
+      "Bash(git add .)"
+    ]
+  }
+}
