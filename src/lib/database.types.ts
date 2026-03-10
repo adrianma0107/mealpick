@@ -25,6 +25,7 @@ export interface Database {
           invite_code?: string
           created_at?: string
         }
+        Relationships: []
       }
 
       users: {
@@ -49,6 +50,7 @@ export interface Database {
           role?:      UserRole
           created_at?: string
         }
+        Relationships: []
       }
 
       dishes: {
@@ -73,6 +75,7 @@ export interface Database {
           family_id?: string
           created_at?: string
         }
+        Relationships: []
       }
 
       ingredients: {
@@ -97,6 +100,7 @@ export interface Database {
           qty?:    number | null
           unit?:   string | null
         }
+        Relationships: []
       }
 
       weekly_orders: {
@@ -124,6 +128,7 @@ export interface Database {
           dish_id?:   string
           created_at?: string
         }
+        Relationships: []
       }
 
       calendar_entries: {
@@ -151,6 +156,7 @@ export interface Database {
           dish_id?:   string
           created_at?: string
         }
+        Relationships: []
       }
     }
 
@@ -164,15 +170,13 @@ export interface Database {
           dish_created_at:  string
           ingredients:      Json | null
         }
+        Relationships: []
       }
     }
 
-    Functions: {
-      get_my_family_id: {
-        Args:    Record<string, never>
-        Returns: string | null
-      }
-    }
+    Functions: Record<string, never>
+    Enums: Record<string, never>
+    CompositeTypes: Record<string, never>
   }
 }
 

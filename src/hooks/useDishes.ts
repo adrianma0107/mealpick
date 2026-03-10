@@ -68,12 +68,18 @@ export function useDishes() {
             .from('dishes')
             .select('id, name, category, ingredients(id, name, qty, unit)')
 
-          if (!error && data && !cancelled) {
-            const mapped: DishWithIngredients[] = data.map((d) => ({
+          type DishRow = {
+            id: string; name: string; category: string | null
+            ingredients: Array<{ id: string; name: string; qty: number | null; unit: string | null }> | null
+          }
+          const typedData = data as unknown as DishRow[] | null
+
+          if (!error && typedData && !cancelled) {
+            const mapped: DishWithIngredients[] = typedData.map((d) => ({
               id: d.id,
               name: d.name,
               category: d.category ?? '家常菜',
-              ingredients: (d.ingredients ?? []).map((i: { id: string; name: string; qty: number | null; unit: string | null }) => ({
+              ingredients: (d.ingredients ?? []).map((i) => ({
                 id: i.id,
                 name: i.name,
                 qty: i.qty != null ? String(i.qty) : '',

@@ -186,7 +186,7 @@ export function WeekProvider({ children }: { children: ReactNode }) {
     }))
   }, [])
 
-  const getOrderSummary = useCallback((dishes: DishWithIngredients[]) => {
+  const getOrderSummary = useCallback((_dishes: DishWithIngredients[]) => {
     const allOrders = data.orders
     const summary: Record<string, string[]> = {}
     Object.entries(allOrders).forEach(([userId, ids]) => {
