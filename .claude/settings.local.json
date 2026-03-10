@@ -13,7 +13,13 @@
       "Bash(gh auth login --web --hostname github.com --git-protocol https)",
       "Bash(git init)",
       "Bash(git checkout -b main)",
-      "Bash(git add .)"
+      "Bash(git add .)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create mealpick --public --source=. --remote=origin --push)",
+      "Bash(npm run build)",
+      "Bash(git add src/lib/database.types.ts src/hooks/useDishes.ts src/contexts/WeekContext.tsx public/_redirects)",
+      "Bash(git push origin main)",
+      "Bash(gh auth setup-git)"
     ]
   }
 }
