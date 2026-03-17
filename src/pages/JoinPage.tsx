@@ -133,6 +133,7 @@ export default function JoinPage() {
                 autoFocus
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-300 outline-none focus:border-orange-400 transition-colors"
               />
+              <p className="text-xs text-gray-300 mt-1.5">已有账号？输入原昵称即可找回</p>
             </div>
             <button
               onClick={handleSubmit}

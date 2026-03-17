@@ -260,13 +260,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const joinFamily = useCallback(async (code: string): Promise<{ ok: boolean; error?: string }> => {
-    const deviceId = getOrCreateDeviceId()
+    const currentDeviceId = getOrCreateDeviceId()
     const normalized = code.trim().toUpperCase()
 
     if (normalized.length !== 6) return { ok: false, error: '邀请码应为6位' }
 
     try {
-      // Look up family
+      // 1. Look up family by invite code
       const { data: family, error: fErr } = await supabase
         .from('families')
         .select('id, name, invite_code')
@@ -275,13 +275,36 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       if (fErr || !family) return { ok: false, error: '邀请码无效，请检查后重试' }
 
-      // Update user
-      await supabase
+      // 2. Check if a user with the same name already exists in this family
+      const { data: existingUser } = await supabase
         .from('users')
-        .update({ family_id: family.id, role: 'member' })
-        .eq('id', deviceId)
+        .select('id, name, role')
+        .eq('family_id', family.id)
+        .eq('name', state.name)
+        .maybeSingle()
 
-      // Fetch members
+      let userId = currentDeviceId
+      let userRole: UserRole = 'member'
+
+      if (existingUser) {
+        // Returning user — reclaim their identity
+        userId = existingUser.id
+        userRole = existingUser.role as UserRole
+        // Point localStorage to the original user ID
+        localStorage.setItem(DEVICE_KEY, userId)
+        // Clean up the temp user created by registerUser (if different)
+        if (currentDeviceId !== userId) {
+          await supabase.from('users').delete().eq('id', currentDeviceId)
+        }
+      } else {
+        // New member — update current user to join this family
+        await supabase
+          .from('users')
+          .update({ family_id: family.id, role: 'member' })
+          .eq('id', currentDeviceId)
+      }
+
+      // 3. Fetch all members
       const { data: members } = await supabase
         .from('users')
         .select('id, name, role')
@@ -290,21 +313,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const cached: CachedUser = {
         name: state.name,
         familyId: family.id,
-        role: 'member',
+        role: userRole,
         inviteCode: family.invite_code,
       }
       saveCache(cached)
 
       setState(prev => ({
         ...prev,
+        deviceId: userId,
         familyId: family.id,
-        role: 'member',
+        role: userRole,
         inviteCode: family.invite_code,
         familyMembers: (members ?? []) as FamilyMember[],
       }))
       return { ok: true }
     } catch {
-      return { ok: false, error: '网络错误，请检查网络后重试。需要先在 Supabase 中执行数据库迁移。' }
+      return { ok: false, error: '网络错误，请检查网络后重试' }
     }
   }, [state.name])
 
